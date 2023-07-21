@@ -46,6 +46,8 @@ class TestWork {
           array.push(word);
         }
         break;
+      default:
+        return "Unknown task!";
     }
     return array;
   }
@@ -95,6 +97,8 @@ class TestWork {
           }
         }
         break;
+      default:
+        return "Unknown task!";
     }
 
     return array;
@@ -158,6 +162,8 @@ class TestWork {
           }
         }
         break;
+      default:
+        return "Unknown task!";
     }
 
     return array;
@@ -199,6 +205,8 @@ class TestWork {
           curr = next;
         }
         break;
+      default:
+        return "Unknown task!";
     }
     return array;
   }
@@ -232,6 +240,8 @@ class TestWork {
           array.push(word);
         }
         break;
+      default:
+        return "Unknown task!";
     }
 
     fs.writeFileSync("fizzbuzz.txt", array.join("\n"));
