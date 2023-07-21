@@ -14,6 +14,8 @@ To use the TestWork class in your JavaScript project, follow these steps:
 
 4. Save the file and you are ready to use the TestWork class.
 
+5. To start the program - type `node app.js` in console.
+
 ## Usage
 
 The TestWork class supports several tasks that you can perform based on the rules provided. Below are the available tasks and how to use them:
