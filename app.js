@@ -1,6 +1,10 @@
+const fs = require("fs");
+
 const basicTask = Symbol("basicTask");
 const serverCall = Symbol("serverCall");
 const multiplyServerCall = Symbol("multiplyServerCall");
+const fibonacci = Symbol("fibonacci");
+const write = Symbol("write");
 
 const URL = "https://example.com";
 
@@ -103,11 +107,11 @@ class TestWork {
       case "all":
         for (let i = 1; i <= this.number; i++) {
           try {
-            const ruleResponse = await fetch(`/rule?num=${i}`);
+            const ruleResponse = await fetch(`${URL}/rule?num=${i}`);
             const ruleData = await ruleResponse.json();
 
             const resResponse = await fetch(
-              `/res?rule=${ruleData.rule}&num=${i}`
+              `${URL}/res?rule=${ruleData.rule}&num=${i}`
             );
             const resData = await resResponse.json();
 
@@ -133,11 +137,11 @@ class TestWork {
       case "fizzbuzz":
         for (let i = 1; i <= this.number; i++) {
           try {
-            const ruleResponse = await fetch(`/rule?num=${i}`);
+            const ruleResponse = await fetch(`${URL}/rule?num=${i}`);
             const ruleData = await ruleResponse.json();
 
             const resResponse = await fetch(
-              `/res?rule=${ruleData.rule}&num=${i}`
+              `${URL}/res?rule=${ruleData.rule}&num=${i}`
             );
             const resData = await resResponse.json();
 
@@ -159,6 +163,82 @@ class TestWork {
     return array;
   }
 
+  [fibonacci]() {
+    let array = [];
+
+    let prev = 0;
+    let curr = 1;
+    switch (this.rules.fizzbuzz) {
+      case "all":
+        for (let i = 1; i <= this.number; i++) {
+          if (curr % 3 === 0 && curr % 5 === 0) {
+            array.push("FizzBuzz");
+          } else if (curr % 3 === 0) {
+            array.push("Fizz");
+          } else if (curr % 5 === 0) {
+            array.push("Buzz");
+          } else {
+            array.push(curr.toString());
+          }
+
+          let next = prev + curr;
+          prev = curr;
+          curr = next;
+        }
+        break;
+      case "fizzbuzz":
+        for (let i = 1; i <= this.number; i++) {
+          if (curr % 3 === 0 && curr % 5 === 0) {
+            array.push("FizzBuzz");
+          } else {
+            array.push(curr.toString());
+          }
+
+          let next = prev + curr;
+          prev = curr;
+          curr = next;
+        }
+        break;
+    }
+    return array;
+  }
+
+  [write]() {
+    let array = [];
+    switch (this.rules.fizzbuzz) {
+      case "all":
+        for (let i = 1; i <= this.number; i++) {
+          let word;
+          if (i % 5 === 0 && i % 3 === 0) {
+            word = "FizzBuzz";
+          } else if (i % 3 === 0) {
+            word = "Fizz";
+          } else if (i % 5 == 0) {
+            word = "Buzz";
+          } else {
+            word = i.toString();
+          }
+          array.push(word);
+        }
+        break;
+      case "fizzbuzz":
+        for (let i = 1; i <= this.number; i++) {
+          let word;
+          if (i % 5 === 0 && i % 3 === 0) {
+            word = "FizzBuzz";
+          } else {
+            word = i.toString();
+          }
+          array.push(word);
+        }
+        break;
+    }
+
+    fs.writeFileSync("fizzbuzz.txt", array.join("\n"));
+
+    return array;
+  }
+
   app() {
     switch (this.task) {
       case basicTask:
@@ -175,7 +255,7 @@ class TestWork {
           });
         break;
       case multiplyServerCall:
-        this[serverCall]()
+        this[multiplyServerCall]()
           .then((serverResult) => {
             console.log(serverResult);
           })
@@ -183,11 +263,19 @@ class TestWork {
             console.error(error);
           });
         break;
+      case fibonacci:
+        const fibonacciResult = this[fibonacci]();
+        console.log(fibonacciResult);
+        break;
+      case write:
+        const writeResult = this[write]();
+        console.log(writeResult);
+        break;
       default:
         console.log("Invalid task!");
     }
   }
 }
 
-const app = new TestWork({ fizzbuzz: "all" }, serverCall, 15);
+const app = new TestWork({ fizzbuzz: "all" }, write, 15);
 app.app();
